@@ -6,13 +6,13 @@ from .models import Category, Product, Comment
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('title', 'image')
+        fields = '__all__'
 
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),write_only=True)
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True)
 
     class Meta:
         model = Comment
@@ -20,24 +20,32 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    details = serializers.HyperlinkedIdentityField(view_name='post-detail',
-                                                   lookup_field='slug')
-
     class Meta:
         model = Product
         fields = '__all__'
 
+    def _get_image_url(self, obj):
+        request = self.context.get('request')
+        image_obj = obj.images.first()
+        if image_obj is not None and image_obj.image:
+            url = image_obj.image.url
+            if request is not None:
+                url = request.build_absolute_uri(url)
+            return url
+        return ''
 
-class ProductListSerializer(serializers.ModelSerializer):
-    details = serializers.HyperlinkedIdentityField(view_name='post-detail',
-                                                   lookup_field='slug')
-    class Meta:
-        model = Product
-        fields = ('title', 'slug', 'image', 'created_at', 'details')
+        # else:
+        #     url = ''
+        # return url
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['image'] = self._get_image_url(instance)
+        representation['categories'] = CategorySerializer(instance.categories.all(), many=True).data
+        return representation
 
 
 class CreateUpdateProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['title', 'description', 'price', 'categories']
-
+        fields = ['title', 'text', 'price', 'categories']
