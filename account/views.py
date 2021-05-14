@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import UserSerializer, LoginSerializer
-
+from .utils import send_activation_email
 User = get_user_model()
 
 
@@ -16,14 +16,16 @@ class RegistrationView(APIView):
         data = request.data
         serializer = UserSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            user = serializer.save()
+            send_activation_email(user)
             return Response('Пользователь успешно зарегистрирован',
                             status=201)
 
 
 class ActivationView(APIView):
-    def get(self, request):
+    def get(self, request, activation_code):
         activation_code = request.query_params.get('u')
+        User = get_user_model()
         user = get_object_or_404(User, activation_code=activation_code)
         user.is_active = True
         user.activation_code = ''
@@ -44,9 +46,3 @@ class LogoutView(APIView):
         Token.objects.filter(user=user).delete()
         return Response('Вы успешно вышли', status=200)
 
-class ResetPasswordView():
-    pass
-
-
-class ChangePasswordView():
-    pass
