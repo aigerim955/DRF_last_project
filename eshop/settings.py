@@ -145,11 +145,13 @@ EMAIL_HOST_USER = config('GMAIL_USER')
 EMAIL_HOST_PASSWORD = config('GMAIL_PASSWORD')
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-    ],
+        # 'rest_framework.authentication.SessionAuthentication',
+    ),
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # 'PAGE_SIZE': 1
+
 }
 
 MEDIA_URL = '/media/'

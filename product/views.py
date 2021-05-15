@@ -6,7 +6,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 from .filters import ProductFilter
 from .serializers import CategorySerializer, ProductSerializer, CommentSerializer, CreateUpdateProductSerializer
@@ -16,11 +15,11 @@ from .models import Category, Product, Comment
 class MyPagination(PageNumberPagination):
     page_size = 2
 
-    def get_paginated_response(self, data):
-        for i in range(self.page_size):
-            text = data[1]['text']
-            data[1]['text'] = text[:15] + '...'
-        return super().get_paginated_response(data)
+    # def get_paginated_response(self, data):
+    #     for i in range(self.page_size):
+    #         text = data[1]['text']
+    #         data[1]['text'] = text[:15] + '...'
+    #     return super().get_paginated_response(data)
 
 
 class CategoriesList(ListAPIView):
