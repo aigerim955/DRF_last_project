@@ -5,3 +5,4 @@ djangorestframework
 python-decouple
 pytils
 django-filter
+drf-yasg==1.17.1

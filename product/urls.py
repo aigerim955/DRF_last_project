@@ -9,4 +9,5 @@ router.register('', ProductViewSet)
 urlpatterns = [
     path('categories/', CategoriesList.as_view()),
     path('', include(router.urls)),
+    # path('comments/', CommentCreate.as_view()),
 ]

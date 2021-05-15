@@ -13,7 +13,7 @@ from .models import Category, Product, Comment
 
 
 class MyPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 1
 
     # def get_paginated_response(self, data):
     #     for i in range(self.page_size):

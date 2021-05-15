@@ -41,7 +41,11 @@ class ProductSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['image'] = self._get_image_url(instance)
-        representation['categories'] = CategorySerializer(instance.category, many=True).data
+        # representation['categories'] = CategorySerializer(instance.category, many=True).data
+        representation['category'] = CategorySerializer(instance.category.all(), many=True).data
+
+        # representation['categories'] = CategorySerializer(instance, many=True).data
+
         return representation
 
 
